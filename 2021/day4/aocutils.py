@@ -1,0 +1,1 @@
+/home/olepor/code/aoc/2021/aocutils.py
