@@ -20,14 +20,14 @@ def Input(day):
     "Open this day's input file."
     filename = day
     try:
-        return open(filename)
+        return open(filename).read()
     except FileNotFoundError:
         return urllib.request.urlopen("http://norvig.com/ipython/" + filename)
 
 
-def data(fname, parser=str, sep="\n") -> list:
+def data(inp, parser=str, sep="\n") -> list:
     "Split the day's input file into sections separated by `sep`, and apply `parser` to each."
-    sections = open(fname).read().rstrip().split(sep)
+    sections = inp.rstrip().split(sep)
     return [parser(section) for section in sections]
 
 
@@ -192,6 +192,9 @@ class multimap(defaultdict):
 
 def lines(string):
     return string.split('\n')
+
+def paragraph(string):
+    return string.split("\n\n")
 
 def ints(text: str) -> Tuple[int]:
     """A tuple of all the integers in text, ignoring non-number characters."""

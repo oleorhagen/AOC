@@ -39,10 +39,9 @@ def pfast(template, production_rules, iterations) -> int:
     keys = create_dict(template)
     counter = Counter(template)
     for i in range(iterations):
-        oldkeys = keys.copy()
         lookupkeys = keys.copy()
         newkeys = defaultdict(int)
-        for key in oldkeys.keys():
+        for key in keys.keys():
             # f(key) = (ci,ca), (ca,ci+1), ca
             ca = production_rules[key]
             c1, c2 = key
