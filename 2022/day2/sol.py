@@ -33,15 +33,6 @@ lookup = {
 
 from aocutils import *
 
-def parser(d):
-    pass
-
-def solve_p1(d):
-    pass
-
-def solve_p2(d):
-    pass
-
 dt = data(Input('part1.test'), parser=words)
 
 assert sum([lookup[x][y] + points[y] for x,y in dt]) == 15

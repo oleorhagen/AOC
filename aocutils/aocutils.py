@@ -19,10 +19,7 @@ from heapq import heappop, heappush
 def Input(day):
     "Open this day's input file."
     filename = day
-    try:
-        return open(filename).read()
-    except FileNotFoundError:
-        return urllib.request.urlopen("http://norvig.com/ipython/" + filename)
+    return open(filename).read()
 
 
 def data(inp, parser=str, sep="\n") -> list:
