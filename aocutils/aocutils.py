@@ -213,3 +213,7 @@ def tokens(matcher):
     def ma(text: str):
         return re.findall(matcher, text)
     return ma
+
+def letters(text: str):
+    """Takes a string, and returns a list of characters"""
+    return tokens("[a-zA-Z]")(text)
