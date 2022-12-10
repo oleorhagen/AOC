@@ -152,6 +152,20 @@ def quantify(iterable, pred=bool) -> int:
     """Count the number of items in iterable for which pred is true."""
     return sum(1 for item in iterable if pred(item))
 
+
+###########
+# Vectors #
+###########
+
+
+class vect(tuple):
+    def __add__(self, other):
+        return vect(a + b for a, b in zip(self, other))
+
+    def __sub__(self, other):
+        return vect(a - b for a, b in zip(self, other))
+
+
 ###########################
 # Matrix initialization #
 ###########################
@@ -160,19 +174,24 @@ def quantify(iterable, pred=bool) -> int:
 def zeromat(size):
     return np.zeros(size, dtype=int)
 
+
 def onesmat(size):
     return np.ones(size, dtype=int)
 
+
 def idmat(size):
     return np.identity(size, dtype=int)
+
 
 def popmat(mat, coordinates, _with=1):
     "Populate the given matrix with the coordinates array"
     for coordinate in coordinates:
         mat[coordinate] = _with
 
+
 class multimap(defaultdict):
     """A mapping of {key: [val1, val2, ...]}."""
+
     def __init__(self, pairs: Iterable[tuple], symmetric=False):
         """Given (key, val) pairs, return {key: [val, ...], ...}.
         If `symmetric` is True, treat (key, val) as (key, val) plus (val, key)."""
@@ -187,32 +206,41 @@ class multimap(defaultdict):
 # Parsers #
 ###########
 
+
 def lines(string):
-    return string.split('\n')
+    return string.split("\n")
+
 
 def paragraph(string):
     return string.split("\n\n")
 
+
 def ints(text: str) -> Tuple[int]:
     """A tuple of all the integers in text, ignoring non-number characters."""
-    return mapt(int, re.findall('-?[0-9]+', text))
+    return mapt(int, re.findall("-?[0-9]+", text))
+
 
 def digits(text: str) -> Tuple[int]:
     """A tuple of all the digits in text (as ints 0–9), ignoring non-digit characters."""
-    return mapt(int, re.findall('[0-9]', text))
+    return mapt(int, re.findall("[0-9]", text))
+
 
 def words(text: str) -> List[str]:
     """A list of all the alphabetic words in text, ignoring non-letters."""
-    return re.findall('[a-zA-Z]+', text)
+    return re.findall("[a-zA-Z]+", text)
+
 
 def mapt(fn, *args) -> tuple:
     """map(fn, *args) and return the result as a tuple."""
     return tuple(map(fn, *args))
 
+
 def tokens(matcher):
     def ma(text: str):
         return re.findall(matcher, text)
+
     return ma
+
 
 def letters(text: str):
     """Takes a string, and returns a list of characters"""
