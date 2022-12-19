@@ -17,9 +17,6 @@ def parser(d):
 def compare(a, b):
     "Compare packets"
 
-    if type(a) == tuple:
-        a, b = a[0], b[0]
-
     if type(a) == int and type(b) == int:
         return b - a
     if type(a) == list and type(b) == list:
@@ -43,7 +40,7 @@ def solve_p1(d):
     return sum(correct_order)
 
 
-def solve_p2(d):
+def solve_p2(d, separators=[[[2]], [[6]]]):
     "Sort all the packets using compare"
     from functools import cmp_to_key
 
@@ -53,13 +50,9 @@ def solve_p2(d):
         ps.append(a)
         ps.append(b)
 
-    print(ps)
-
-    ps.append([[2]])
-    ps.append([[6]])
+    ps = ps + separators
 
     s = sorted(ps, key=cmp_to_key(compare), reverse=True)
-    print(s)
 
     from math import prod
 
