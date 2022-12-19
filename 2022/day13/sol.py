@@ -14,21 +14,27 @@ def parser(d):
     return d.split("\n")
 
 
-def solve_p1(d):
-    def compare(a, b):
-        if type(a) == int and type(b) == int:
-            return b - a
-        if type(a) == list and type(b) == list:
-            for l, r in zip(a, b):
-                if res := compare(l, r):
-                    return res
-            return len(b) - len(a)
-        if type(a) == int and type(b) == list:
-            return compare([a], b)
-        if type(b) == int and type(a) == list:
-            return compare(a, [b])
+def compare(a, b):
+    "Compare packets"
 
-        assert False
+    if type(a) == tuple:
+        a, b = a[0], b[0]
+
+    if type(a) == int and type(b) == int:
+        return b - a
+    if type(a) == list and type(b) == list:
+        for l, r in zip(a, b):
+            if res := compare(l, r):
+                return res
+        return len(b) - len(a)
+    if type(a) == int and type(b) == list:
+        return compare([a], b)
+    if type(b) == int and type(a) == list:
+        return compare(a, [b])
+    assert False
+
+
+def solve_p1(d):
 
     correct_order = []
     for i, (left, right) in enumerate(d):
@@ -38,7 +44,26 @@ def solve_p1(d):
 
 
 def solve_p2(d):
-    pass
+    "Sort all the packets using compare"
+    from functools import cmp_to_key
+
+    # Flatten the list
+    ps = []
+    for a, b in d:
+        ps.append(a)
+        ps.append(b)
+
+    print(ps)
+
+    ps.append([[2]])
+    ps.append([[6]])
+
+    s = sorted(ps, key=cmp_to_key(compare), reverse=True)
+    print(s)
+
+    from math import prod
+
+    return prod(s.index(i) + 1 for i in ([[2]], [[6]]))
 
 
 td = data(Input("part1.test"), parser=parser, sep="\n\n")
@@ -55,7 +80,6 @@ dd = [(eval(left), eval(right)) for left, right in d]
 
 puzzle.answer_a = solve_p1(dd)
 
+assert solve_p2(tdd) == 140
 
-# assert solve_p2(td) == 0
-
-# puzzle.answer_b = solve_p2(d)
+puzzle.answer_b = solve_p2(dd)
