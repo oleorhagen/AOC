@@ -51,7 +51,7 @@ def dmin(matrix, cost_matrix, start, end):
     "Run Dijkstra's Algorithm on the graph"
 
     # Initialize the cost matrix
-    cost_matrix[(0, 0)] = 0
+    cost_matrix[start] = 0
 
     frontier = [(0, start)]
     visited = []
@@ -66,23 +66,20 @@ def dmin(matrix, cost_matrix, start, end):
         return points
 
     while len(frontier) != 0:
-        print(matrix.matrix)
-        print(cost_matrix.matrix)
-        print("Frontier: ", frontier)
-        print("Visited: ", visited)
         cost, node = heappop(frontier)
         if node == end:
             return cost_matrix[end]
         # For all neigbhours, update the cost
         for point in filter_moves(matrix[node], matrix.neighbours4(node)):
-            if point not in [(x,y) for _, (x,y) in frontier] and point not in visited:
+            if point not in [(x, y) for _, (x, y) in frontier] and point not in visited:
                 heappush(frontier, (cost + 1, point))
-                cost_matrix[point] = cost+1
-            elif point in [(x,y) for _, (x,y) in frontier]:
+                cost_matrix[point] = cost + 1
+            elif point in [(x, y) for _, (x, y) in frontier]:
                 pass
         visited.append(node)
 
-    raise Exception("No solution found!")
+    return 1e4
+    # raise Exception("No solution found!")
 
 
 def solve_p1(matrix, cost_matrix, start, end):
@@ -128,9 +125,29 @@ matrix, cost_matrix, start, end = parse_input(puzzle.input_data)
 matrix = Matrix(matrix, max_x=len(matrix[0]), max_y=len(matrix))
 cost_matrix = Matrix(cost_matrix, max_x=len(cost_matrix[0]), max_y=len(cost_matrix))
 
-puzzle.answer_a = solve_p1(matrix, cost_matrix, start, end)
+# puzzle.answer_a = solve_p1(matrix, cost_matrix, start, end)
+
+# Do the same for all a's
+
+# matrix, cost_matrix, start, end = parse_input(Input("part1.test"))
+
+# matrix = Matrix(matrix, max_x=len(matrix[0]), max_y=len(matrix))
+# cost_matrix = Matrix(cost_matrix, max_x=len(cost_matrix[0]), max_y=len(cost_matrix))
+_as = []
+breakpoint()
+for y, col in enumerate(matrix.matrix):
+    for x, row in enumerate(col):
+        if row == 1000:
+            continue
+        print(row)
+        if row == 0:
+            _as.append((x, y))
 
 
-# assert solve_p2(td) == 0
+print(_as)
+
+puzzle.answer_b = min([solve_p1(matrix, cost_matrix, s, end) for s in _as])
+
+# assert solve_p2(td) == min([solve_p1(matrix, cost_matrix, s, end) for s in _as])
 
 # puzzle.answer_b = solve_p2(d)
