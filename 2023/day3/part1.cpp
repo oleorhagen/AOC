@@ -71,9 +71,9 @@ void solve(string filename) {
 				//
 				// collect the right end
 				//
-				//   x
+				// x x
 				// d x <- we are here
-				//   x
+				// x x
 				//
 				// Then multiple the current number by the number of symbols
 				if (std::atoi(string(cur_num.begin(), cur_num.end()).c_str())) {
@@ -87,11 +87,12 @@ void solve(string filename) {
 					tot_sum +=
 						(std::atoi(string(cur_num.begin(), cur_num.end()).c_str()) * num_symbols);
 					std::cerr << "tot_sum: " << tot_sum << std::endl;
+					cur_num = {};    // Reset
+					num_symbols = 0; // Reset
 				}
-				cur_num = {};    // Reset
-				num_symbols = 0; // Reset
 			}
 		}
+		cur_num = {};
 		num_symbols = 0; // End of line
 	}
 
