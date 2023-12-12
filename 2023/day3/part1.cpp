@@ -56,6 +56,10 @@ void solve(string filename) {
 
 	for (int i = 0; i < matrix.size(); i++) {
 		for (int j = 0; j < matrix[0].size(); j++) {
+			// if
+			// next is digit -> collect
+			// next is EOL -> compute
+			// next is nodigit -> compute
 			if (std::isdigit(matrix[i][j])) {
 				// Get all symbols in the column to the left
 				//
@@ -63,9 +67,18 @@ void solve(string filename) {
 				//   x d
 				//   x
 				num_symbols += get_n_symbols(matrix, {{i + 1, j - 1}, {i, j - 1}, {i - 1, j - 1}});
-				// std::cerr << "i: " << i << " j: " << j << std::endl;
-				// std::cerr << "num_symbols: " << num_symbols << std::endl;
 				cur_num.push_back(matrix[i][j]);
+				if (j == matrix[0].size() - 1) {
+					// EOL - collect
+					if (std::atoi(string(cur_num.begin(), cur_num.end()).c_str())) {
+						tot_sum +=
+							(std::atoi(string(cur_num.begin(), cur_num.end()).c_str())
+							 * num_symbols);
+						cur_num = {};    // Reset
+						num_symbols = 0; // Reset
+					}
+				}
+
 			} else {
 				// no digit
 				//
@@ -80,13 +93,8 @@ void solve(string filename) {
 					num_symbols +=
 						get_n_symbols(matrix, {{i + 1, j - 1}, {i, j - 1}, {i - 1, j - 1}});
 					num_symbols += get_n_symbols(matrix, {{i + 1, j}, {i, j}, {i - 1, j}});
-					std::cerr << "Num neighbouring symbols: " << num_symbols << std::endl;
-					std::cerr << "Current number: " << string(cur_num.begin(), cur_num.end())
-							  << std::endl;
-
 					tot_sum +=
 						(std::atoi(string(cur_num.begin(), cur_num.end()).c_str()) * num_symbols);
-					std::cerr << "tot_sum: " << tot_sum << std::endl;
 					cur_num = {};    // Reset
 					num_symbols = 0; // Reset
 				}
