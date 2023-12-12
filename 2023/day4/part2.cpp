@@ -30,7 +30,7 @@ void solve(string filename) {
 
 		std::cerr << "intersection size: " << v.size() << std::endl;
 		std::cerr << "iteration: " << i + 1 << std::endl;
-		for (int k = 1; k <= v.size() && i + k < cards.size(); k++) {
+		for (int k = 1; k <= std::min(v.size(), cards.size()); k++) {
 			cards[i + k] += cards[i];
 		}
 		i++;
