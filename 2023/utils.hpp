@@ -51,6 +51,17 @@ std::ostream &operator<<(std::ostream &os, const vector<int> &v) {
 	return os;
 }
 
+
+vector<vector<char>> create_matrix(vector<string> lines) {
+	vector<vector<char>> m {};
+	for (int i = 0; i < lines.size(); i++) {
+		vector<char> cs(lines[0].size());
+		lines[i].copy(&cs[0], cs.size());
+		m.push_back(cs);
+	}
+	return m;
+}
+
 // TODO - Maybe return an iterator instead
 // template <typename T>
 // vector<T> tokenize(string s, std::function<T(string)> f) {
