@@ -36,7 +36,7 @@ vector<string> split(string s, char delimeter) {
 template <typename T>
 vector<T> tokenize(string s) {
 	vector<T> v {};
-	int a {};
+	T a {};
 	std::stringstream ss(s);
 	while (ss >> a) {
 		v.push_back(a);
