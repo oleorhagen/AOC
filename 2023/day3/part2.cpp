@@ -81,7 +81,18 @@ void solve(string filename) {
 				std::cerr << "i: " << i << " j: " << j << std::endl;
 				std::cerr << "Found symbol: " << mat[i][j] << std::endl;
 				auto neighs = get_neigh_nums(mat, i, j);
-				sum += std::accumulate(neighs.cbegin(), neighs.cend(), 0);
+				if (std::count_if(neighs.begin(), neighs.end(), [](int a) { return a != 0; }) == 2
+					and mat[i][j] == '*') {
+					vector<int> v {};
+					std::copy_if(neighs.begin(), neighs.end(), std::back_inserter(v), [](int i) {
+						return i != 0;
+					});
+					sum += v.at(0) * v.at(1);
+					std::cerr << "Got gear ratio!!!!" << neighs.at(0) * neighs.at(1) << std::endl;
+					std::cerr << neighs << std::endl;
+					continue;
+				}
+				// sum += std::accumulate(neighs.cbegin(), neighs.cend(), 0);
 				std::cerr << "Found neighbours: " << neighs << std::endl;
 			}
 		}
