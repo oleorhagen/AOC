@@ -4,6 +4,8 @@
 #include <functional>
 #include <iostream>
 #include <numeric>
+#include <map>
+#include <ranges>
 #include <sstream>
 #include <string>
 #include <unordered_set>
