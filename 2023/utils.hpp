@@ -80,6 +80,19 @@ vector<vector<char>> create_matrix(vector<string> lines) {
 	return m;
 }
 
+namespace mstd {
+template <class InputIt, class UnaryFunction>
+constexpr UnaryFunction for_each(InputIt it, UnaryFunction f) {
+	return std::for_each(it.cbegin(), it.cend(), f);
+}
+
+template <typename T>
+size_t last(T t) {
+	return t.size() - 1;
+}
+
+} // namespace mstd
+
 // TODO - Maybe return an iterator instead
 // template <typename T>
 // vector<T> tokenize(string s, std::function<T(string)> f) {

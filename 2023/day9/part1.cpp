@@ -12,17 +12,13 @@ int f(vector<int> ns) {
 	if (std::all_of(ns.cbegin(), ns.cend(), [](int a) { return a == 0; })) {
 		return 0;
 	}
-	return ns.at(ns.size() - 1) + f(diff(ns));
+	return ns.at(mstd::last(ns)) + f(diff(ns));
 }
 
 void solve(string filename) {
 	auto lines = split_lines(filename);
 	int sum {0};
-	for (const auto &line : lines) {
-		vector<int> ns = tokenize<int>(line);
-		std::cerr << "Got last num: " << to_string(f(ns)) << std::endl;
-		sum += f(ns);
-	}
+	mstd::for_each(lines, [&sum](string s) { sum += f(tokenize<int>(s)); });
 	std::cout << to_string(sum) << std::endl;
 }
 
