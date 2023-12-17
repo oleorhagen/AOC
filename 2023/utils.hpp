@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <regex>
 #include <cassert>
 #include <fstream>
 #include <functional>
@@ -46,12 +47,26 @@ vector<T> tokenize(string s) {
 	return v;
 }
 
+string trim(string s) {
+	std::string::iterator end_pos = std::remove(s.begin(), s.end(), ' ');
+	s.erase(end_pos, s.end());
+	return s;
+}
+
 std::ostream &operator<<(std::ostream &os, const vector<int> &v) {
 	for (const auto i : v) {
 		os << i << " ";
 	}
 	return os;
 }
+
+std::ostream &operator<<(std::ostream &os, const vector<string> &v) {
+	for (const auto i : v) {
+		os << i << " ";
+	}
+	return os;
+}
+
 
 
 vector<vector<char>> create_matrix(vector<string> lines) {
