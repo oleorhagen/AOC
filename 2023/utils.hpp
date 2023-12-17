@@ -86,6 +86,11 @@ constexpr UnaryFunction for_each(InputIt it, UnaryFunction f) {
 	return std::for_each(it.cbegin(), it.cend(), f);
 }
 
+template <class InputIt, class UnaryPredicate>
+constexpr bool all_of(InputIt it, UnaryPredicate p) {
+	return std::find_if_not(it.cbegin(), it.cend(), p) == it.cend();
+}
+
 template <typename T>
 size_t last(T t) {
 	return t.size() - 1;
