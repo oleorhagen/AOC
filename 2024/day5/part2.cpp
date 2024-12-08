@@ -31,21 +31,9 @@ bool correct_update(std::vector<int> update,
 std::vector<int> corrected_update(std::vector<int> update,
                                   std::vector<std::pair<int, int>> rules) {
   // Go through each update, and if a rule is broken, we swap the numbers
-  std::set<int> pages{update.begin(), update.end()};
-  for (const auto rule : rules) {
-    int X = rule.first;
-    int Y = rule.second;
-    if (pages.contains(X) and pages.contains(Y)) {
-      // The ordering needs to be right
-      int X_index = index_of(update, X);
-      int Y_index = index_of(update, Y);
-      if (X_index > Y_index) {
-        std::cout << "Swapping: " << X << " AND " << Y << "\n";
-
-        std::swap(update[X_index], update[Y_index]);
-      }
-    }
-  }
+  std::set<std::pair<int, int>> ruleset{rules.begin(), rules.end()};
+  std::sort(update.begin(), update.end(),
+            [&](const int a, const int b) { return ruleset.contains({a, b}); });
   return update;
 }
 
