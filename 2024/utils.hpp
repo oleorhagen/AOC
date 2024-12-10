@@ -37,6 +37,16 @@ vector<string> split(string s, char delimeter) {
   return tokens;
 }
 
+vector<int> splitint(string s, char delimeter) {
+  std::stringstream ss{s};
+  vector<int> tokens{};
+  string line{};
+  while (std::getline(ss, line, delimeter)) {
+    tokens.push_back(std::stoi(line));
+  }
+  return tokens;
+}
+
 template <typename T>
 vector<T> tokenize(string s) {
   vector<T> v{};
@@ -61,6 +71,13 @@ std::ostream& operator<<(std::ostream& os, const vector<int>& v) {
   return os;
 }
 
+std::ostream& operator<<(std::ostream& os, const vector<long long int>& v) {
+  for (const auto i : v) {
+    os << i << " ";
+  }
+  return os;
+}
+
 std::ostream& operator<<(std::ostream& os, const vector<string>& v) {
   for (const auto i : v) {
     os << i << " ";
@@ -71,6 +88,13 @@ std::ostream& operator<<(std::ostream& os, const vector<string>& v) {
 std::ostream& operator<<(std::ostream& os, const vector<char>& v) {
   for (const auto i : v) {
     os << i << " ";
+  }
+  return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const vector<vector<char>>& v) {
+  for (const auto i : v) {
+    os << i << "\n";
   }
   return os;
 }
