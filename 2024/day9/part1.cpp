@@ -65,15 +65,9 @@ int main(int argc, char* argv[]) {
 
   const disk_map m = digits(compacted_file);
 
-  std::cout << "toknized: " << m << "\n";
-
   auto x = Xpand(m);
 
-  std::cout << "xpanded: " << x << "\n";
-
   auto c = Compact(x);
-
-  std::cout << "Compacted: \n" << c << "\n";
 
   std::cout << "Hash: " << hashfunction(c) << "\n";
 
