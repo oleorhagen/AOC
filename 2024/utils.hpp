@@ -58,6 +58,22 @@ vector<T> tokenize(string s) {
   return v;
 }
 
+vector<int> digits(string s) {
+  vector<int> digits{};
+  std::regex digit_regex("([0-9])");
+  int submatches[]{1};
+
+  auto digits_begin =
+      std::sregex_token_iterator(s.begin(), s.end(), digit_regex, submatches);
+  auto digits_end = std::sregex_token_iterator();
+
+  for (auto i = digits_begin; i != digits_end; i++) {
+    digits.push_back(std::stoi(*i));
+  }
+
+  return digits;
+}
+
 string trim(string s) {
   std::string::iterator end_pos = std::remove(s.begin(), s.end(), ' ');
   s.erase(end_pos, s.end());
