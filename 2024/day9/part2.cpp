@@ -69,16 +69,45 @@ optional<std::span<int>> findFirstFreeSpace(disk_map_spans v,
   return *free_block;
 }
 
-disk_map Compact(disk_map_spans& xpanded) {
+disk_map_spans Compact(disk_map_spans& xpanded) {
   // Now we compact the file from the highest file_ID
   for (auto rev_it = xpanded.rbegin(); rev_it != xpanded.rend(); rev_it++) {
     auto file = *rev_it;
     std::cout << "Rev file: " << file << "\n";
 
     auto free_space = findFirstFreeSpace(xpanded, file.size());
+    if (!free_space) {
+      continue;
+    }
+
+    auto free_space_unwrapped = free_space.value();
+
+    // Swap the elements from the span (do subspans later)
+    std::cout << "Swapping: " << "\n";
+    std::cout << "free space: " << free_space.value() << "\n";
+    std::cout << "File: " << file << "\n";
+
+    std::swap_ranges(file.begin(), file.end(), free_space_unwrapped.begin());
+
+    for (auto file : xpanded) {
+      std::cout << "After swap: " << file << "\n";
+    }
   }
 
-  return {};
+  return xpanded;
+}
+
+// Type conversion from disk_map_spans -> disk_map
+// template <>
+// disk_map_spans::operator int() const {
+//   return {};
+// }
+disk_map convert(disk_map_spans& m) {
+  disk_map dm{};
+  for (auto e : m) {
+    dm.insert(dm.end(), e.begin(), e.end());
+  }
+  return dm;
 }
 
 long long int hashfunction(disk_map v) {
@@ -109,9 +138,17 @@ int main(int argc, char* argv[]) {
 
   // std::cout << "Disk map: " << "\n";
 
-  Compact(c);
+  auto compacted_disk = Compact(c);
 
-  // std::cout << "HHash: " << c << "\n";
+  for (auto file : compacted_disk) {
+    std::cout << "Compacted file: " << file << "\n";
+  }
+
+  disk_map _m = convert(compacted_disk);
+
+  std::cout << _m << "\n";
+
+  // std::cout << "HHash: " << hashfunction(compacted_disk) << "\n";
 
   return 0;
 }
