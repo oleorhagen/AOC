@@ -6,10 +6,6 @@
 
 using matrix = vector<vector<int>>;
 
-//
-/// TODO - We need to count the number of times we visit
-//
-
 int DFS(const matrix& m, int x, int y, int end_value,
         std::set<std::pair<int, int>> visited) {
   visited.insert({x, y});
