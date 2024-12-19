@@ -68,6 +68,13 @@ std::ostream &operator<<(std::ostream &os, const vector<string> &v) {
 	return os;
 }
 
+std::ostream &operator<<(std::ostream &os, const vector<char> &v) {
+	for (const auto i : v) {
+		os << i << " ";
+	}
+	return os;
+}
+
 
 
 vector<vector<char>> create_matrix(vector<string> lines) {
