@@ -1,4 +1,4 @@
-// -*- mode: c++; compile-command: "g++ -g -std=c++23 part1.cpp" -*-
+// -*- mode: c++; compile-command: "g++ -g -std=c++23 part2.cpp" -*-
 
 // Copyright 2024 <Ole P. Orhagen>
 
@@ -6,11 +6,16 @@
 
 using matrix = vector<vector<int>>;
 
-int DFS(const matrix& m, int x, int y, std::set<std::pair<int, int>>& visited) {
-  visited.insert({x, y});
-  std::cout << "Current val: " << m[y][x] << "\n";
+//
+/// TODO - We need to count the number of times we visit
+//
 
-  if (m[y][x] == 9) {
+int DFS(const matrix& m, int x, int y, int end_value,
+        std::set<std::pair<int, int>> visited) {
+  visited.insert({x, y});
+  std::cout << "Current val: " << m[x][y] << "\n";
+
+  if (m[x][y] == end_value) {
     std::cout << "Reached a peak!!" << "\n";
     return 1;
   }
@@ -32,13 +37,13 @@ int DFS(const matrix& m, int x, int y, std::set<std::pair<int, int>>& visited) {
       continue;
     }
     std::cout << "Neighbour: " << neighbour
-              << " val: " << m[neighbour.second][neighbour.first] << "\n";
+              << " val: " << m[neighbour.first][neighbour.second] << "\n";
 
-    if (m[neighbour.second][neighbour.first] == m[y][x] + 1) {
+    if (m[neighbour.first][neighbour.second] == m[x][y] + 1) {
       std::cout << "Going from: " << x << ":" << y << " -> " << neighbour
                 << "\n";
 
-      auto res = DFS(m, neighbour.first, neighbour.second, visited);
+      auto res = DFS(m, neighbour.first, neighbour.second, end_value, visited);
       sum += res;
     }
   }
@@ -64,6 +69,8 @@ int main(int argc, char* argv[]) {
     }
   }
 
+  std::cout << "Starting pos size: " << starting_pos.size() << "\n";
+
   std::cout << "Starting pos: " << starting_pos << "\n";
 
   std::cout << m << "\n";
@@ -72,35 +79,18 @@ int main(int argc, char* argv[]) {
 
   std::set<std::pair<int, int>> visited{};
 
-  std::cout << "Starting at: " << starting_pos[0] << "\n";
+  // std::cout << "Starting at: " << starting_pos[0] << "\n";
 
-  // auto _ = DFS(m, starting_pos[0].second, starting_pos[0].first, visited);
+  // auto peaks = DFS(m, m.size() - 1, 2, 0, visited);
 
-  // Count the number of 9's in visited
-  // for (const auto& pos : visited) {
-  //   if (m[pos.second][pos.first] == 9) {
-  //     tot += 1;
-  //   }
-  // }
-
-  // Visualize the path
-  // auto m_copy = m;
-  // for (const auto& pos : visited) {
-  //   m_copy[pos.first][pos.second] = -1;
-  // }
-  // std::cout << "Visualized path travelled:" << "\n";
-  // std::cout << m_copy << "\n";
+  // std::cout << "Reached peaks: " << peaks << "\n";
 
   for (const auto& start_pos : starting_pos) {
     // Do a DFS search through the matrix
-    int reached = DFS(m, start_pos.second, start_pos.first, visited);
+    int reached = DFS(m, start_pos.first, start_pos.second, 9, visited);
     std::cout << "Reached " << reached << " for " << start_pos << "\n";
 
-    for (const auto& pos : visited) {
-      if (m[pos.second][pos.first] == 9) {
-        tot += 1;
-      }
-    }
+    tot += reached;
 
     visited = {};
   }

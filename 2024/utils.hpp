@@ -5,13 +5,18 @@
 #include <iostream>
 #include <map>
 #include <numeric>
+#include <optional>
 #include <ranges>
 #include <regex>
+#include <set>
 #include <sstream>
 #include <string>
 #include <unordered_set>
 #include <vector>
 
+using std::nullopt;
+using std::optional;
+using std::pair;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -87,6 +92,13 @@ std::ostream& operator<<(std::ostream& os, const vector<int>& v) {
   return os;
 }
 
+std::ostream& operator<<(std::ostream& os, const std::span<int>& v) {
+  for (const auto i : v) {
+    os << i << " ";
+  }
+  return os;
+}
+
 std::ostream& operator<<(std::ostream& os, const vector<long long int>& v) {
   for (const auto i : v) {
     os << i << " ";
@@ -115,6 +127,26 @@ std::ostream& operator<<(std::ostream& os, const vector<vector<char>>& v) {
   return os;
 }
 
+std::ostream& operator<<(std::ostream& os, const vector<vector<int>>& v) {
+  for (const auto i : v) {
+    os << i << "\n";
+  }
+  return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const std::pair<int, int>& p) {
+  os << p.first << ":" << p.second << "\n";
+  return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const vector<std::pair<int, int>>& v) {
+  for (const auto i : v) {
+    os << i << "\n";
+  }
+  return os;
+}
+
 vector<vector<char>> create_matrix(vector<string> lines) {
   vector<vector<char>> m{};
   for (int i = 0; i < lines.size(); i++) {
@@ -123,6 +155,29 @@ vector<vector<char>> create_matrix(vector<string> lines) {
     m.push_back(cs);
   }
   return m;
+}
+
+/* TODO - Obviously, this has to handle other cases of types */
+template <typename T>
+vector<vector<T>> parse_matrix(vector<string> lines) {
+  vector<vector<T>> m{};
+  for (int i = 0; i < lines.size(); i++) {
+    vector<T> cs = digits(lines[i]);
+    m.push_back(cs);
+  }
+  return m;
+}
+
+// Return the manhattan neighbour cells (only positive results)
+vector<std::pair<int, int>> neighbour4(vector<vector<int>> matrix, int x,
+                                       int y) {
+  vector<std::pair<int, int>> neigbours = {{1, 0}, {0, -1}, {-1, 0}, {0, 1}};
+  std::ranges::transform(neigbours.begin(), neigbours.end(), neigbours.begin(),
+                         [x, y](const std::pair<int, int>& p) {
+                           return std::pair<int, int>{p.first + x,
+                                                      p.second + y};
+                         });
+  return neigbours;
 }
 
 namespace mstd {

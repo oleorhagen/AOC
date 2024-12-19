@@ -8,6 +8,18 @@
 
 using disk_map = vector<int>;
 
+using file_id = size_t;
+
+using disk_map_spans = vector<std::span<int>>;
+
+disk_map convert(disk_map_spans& m) {
+  disk_map dm{};
+  for (auto e : m) {
+    dm.insert(dm.end(), e.begin(), e.end());
+  }
+  return dm;
+}
+
 disk_map Xpand(disk_map file) {
   disk_map ret{};
   int counter{0};
@@ -23,10 +35,6 @@ disk_map Xpand(disk_map file) {
   return ret;
 }
 
-using file_id = size_t;
-
-using disk_map_spans = vector<std::span<int>>;
-
 // Create an array of spans over the underlying disk map, enabling us to swap them
 disk_map_spans splitDiskMapIntoFiles(disk_map& m) {
   assert(m.size() > 0);
@@ -39,9 +47,9 @@ disk_map_spans splitDiskMapIntoFiles(disk_map& m) {
     if (cur_filetype != last_filetype) {
       // Create a span from the previous file
       std::span<int> s(span_start_it, it);
-      std::cout << "Creating span: " << s << "\n";
-      std::cout << "Span start: " << *span_start_it << "\n";
-      std::cout << "Span end: " << *it << "\n";
+      // std::cout << "Creating span: " << s << "\n";
+      // std::cout << "Span start: " << *span_start_it << "\n";
+      // std::cout << "Span end: " << *it << "\n";
 
       files.push_back(s);
       span_start_it = it;
@@ -49,9 +57,9 @@ disk_map_spans splitDiskMapIntoFiles(disk_map& m) {
     }
   }
   files.push_back({span_start_it, it});
-  for (const auto& f : files) {
-    std::cout << "Files: " << f << "\n";
-  }
+  // for (const auto& f : files) {
+  //   std::cout << "Files: " << f << "\n";
+  // }
   return files;
 }
 
@@ -69,32 +77,71 @@ optional<std::span<int>> findFirstFreeSpace(disk_map_spans v,
   return *free_block;
 }
 
-disk_map_spans Compact(disk_map_spans& xpanded) {
+auto Compact(disk_map_spans& xpanded) -> disk_map {
   // Now we compact the file from the highest file_ID
-  for (auto rev_it = xpanded.rbegin(); rev_it != xpanded.rend(); rev_it++) {
-    auto file = *rev_it;
-    std::cout << "Rev file: " << file << "\n";
 
-    auto free_space = findFirstFreeSpace(xpanded, file.size());
-    if (!free_space) {
+  disk_map m{convert(xpanded)};
+
+  int nr_of_files{std::ranges::max(m)};
+
+  std::cout << "Nr of files: " << nr_of_files << "\n";
+
+  // For each file, try and move it to a free space at the start
+  for (int i = nr_of_files; i >= 0; i--) {
+    std::cout << "M prior: " << m << "\n";
+
+    std::cout << "File nr: " << i << "\n";
+    // Now with the map as the base, we can be more dynamic
+    auto spans = splitDiskMapIntoFiles(m);
+
+    // find the file we are working on
+    auto file_view =
+        spans | std::views::filter([i](auto file) { return file[0] == i; });
+
+    auto file = *file_view.begin();
+
+    // Find the first free space which has the required amount of free space
+    auto free_space =
+        std::find_if(spans.begin(), spans.end(), [&](auto free_file) {
+          return free_file[0] == -1 and free_file.size() >= file.size();
+        });
+
+    if (free_space == spans.end()) {
+      // No free space available for this file
       continue;
     }
 
-    auto free_space_unwrapped = free_space.value();
+    // Swap the file and free-space
+    // std::cout << "Free: " << free_space << "\n";
 
-    // Swap the elements from the span (do subspans later)
-    std::cout << "Swapping: " << "\n";
-    std::cout << "free space: " << free_space.value() << "\n";
-    std::cout << "File: " << file << "\n";
-
-    std::swap_ranges(file.begin(), file.end(), free_space_unwrapped.begin());
-
-    for (auto file : xpanded) {
-      std::cout << "After swap: " << file << "\n";
+    // I have an index problem
+    // TODO - Make sure the swap always is to the left
+    // std::distance(file_view.begin(), spans.begin());
+    size_t file_dist{100};
+    auto free_dist = 0;
+    for (auto it = free_space; it != spans.end(); it++) {
+      free_dist += it->size();
     }
+
+    for (auto i = 0; i < m.size(); ++i) {
+      if (m[i] == file[0]) {
+        file_dist = m.size() - i;
+      }
+    }
+
+    std::cout << "Greater file dist: " << file_dist << "\n";
+    std::cout << "Lesser free dist: " << free_dist << "\n";
+    if (free_dist <= file_dist) {
+      continue;
+    }
+
+    std::cout << "Swapping: " << file << " and " << *free_space << "\n";
+    std::swap_ranges(file.begin(), file.end(), free_space->begin());
+
+    std::cout << "M  post: " << m << "\n";
   }
 
-  return xpanded;
+  return m;
 }
 
 // Type conversion from disk_map_spans -> disk_map
@@ -102,19 +149,11 @@ disk_map_spans Compact(disk_map_spans& xpanded) {
 // disk_map_spans::operator int() const {
 //   return {};
 // }
-disk_map convert(disk_map_spans& m) {
-  disk_map dm{};
-  for (auto e : m) {
-    dm.insert(dm.end(), e.begin(), e.end());
-  }
-  return dm;
-}
-
 long long int hashfunction(disk_map v) {
   long long int hash{0};
   for (long long int i = 0; i < v.size(); ++i) {
     if (v[i] == -1)
-      return hash;
+      continue;
     hash += i * v[i];
   }
   return hash;
@@ -144,11 +183,11 @@ int main(int argc, char* argv[]) {
     std::cout << "Compacted file: " << file << "\n";
   }
 
-  disk_map _m = convert(compacted_disk);
+  // disk_map _m = convert(compacted_disk);
 
-  std::cout << _m << "\n";
+  std::cout << compacted_disk << "\n";
 
-  // std::cout << "HHash: " << hashfunction(compacted_disk) << "\n";
+  std::cout << "HHash: " << hashfunction(compacted_disk) << "\n";
 
   return 0;
 }
