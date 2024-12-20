@@ -93,6 +93,20 @@ std::ostream& operator<<(std::ostream& os, const vector<int>& v) {
   return os;
 }
 
+std::ostream& operator<<(std::ostream& os, const vector<size_t>& v) {
+  for (const auto i : v) {
+    os << i << " ";
+  }
+  return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const std::span<size_t>& v) {
+  for (const auto i : v) {
+    os << i << " ";
+  }
+  return os;
+}
+
 std::ostream& operator<<(std::ostream& os, const std::span<int>& v) {
   for (const auto i : v) {
     os << i << " ";

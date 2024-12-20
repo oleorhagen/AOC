@@ -1,0 +1,37 @@
+
+# How to we solve the exponential growth problem?
+
+1. We can store a count with each number, seeing how many times it has been
+expanded, then we can expand one number at the time, keeping to the leftmost,
+for example. Then when we are done expanding it, we increase the count, then discard the number from the array.
+
+2. Divide and conquer, do a recursive list split when expanding and counting
+
+I am running out of memory!!!
+
+How to handle this properly?
+
+Even expanding one number to this depth is difficult!
+
+I should recurse to the given depth for each number (!)
+
+Which at least saves the memory problem, however, it is still slow as a dog. How
+often do we do overlapping work? Perhaps we can memoize this?
+
+Some quick checking of my solution shows that there is a vast overlap in the calculations made:
+
+```term
+zsh ❯ ./a.out 25 $(cat input) | grep 'depth: 25' | sort | uniq | wc -l
+345
+
+❯2AOC/2024/day11 on  master [!?]
+zsh ❯ ./a.out 25 $(cat input) | grep 'depth: 25' | sort | wc -l
+216042
+```
+
+So two orders of magnitude difference. Let's solve this through extorting a little memory here (!)
+
+We will store a triple (value, depth, tot) for each calculation, and then look
+it up whenever we hit duplicates.
+
+
