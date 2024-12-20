@@ -174,10 +174,13 @@ vector<vector<char>> create_matrix(vector<string> lines) {
 
 /* TODO - Obviously, this has to handle other cases of types */
 template <typename T>
-vector<vector<T>> parse_matrix(vector<string> lines) {
+vector<vector<T>> parse_matrix(
+    vector<string> lines,
+    std::function<vector<T>(string)> line_parser = digits) {
   vector<vector<T>> m{};
   for (int i = 0; i < lines.size(); i++) {
-    vector<T> cs = digits(lines[i]);
+    vector<T> cs = line_parser(lines[i]);
+    // vector<T> cs{};
     m.push_back(cs);
   }
   return m;
