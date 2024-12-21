@@ -7,6 +7,7 @@
 #include <map>
 #include <numeric>
 #include <optional>
+#include <queue>
 #include <ranges>
 #include <regex>
 #include <set>
@@ -87,6 +88,21 @@ string trim(string s) {
 }
 
 std::ostream& operator<<(std::ostream& os, const vector<int>& v) {
+  for (const auto i : v) {
+    os << i << " ";
+  }
+  return os;
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const std::tuple<T, T>& v) {
+
+  os << std::get<0>(v) << ":" << std::get<1>(v) << std::endl;
+  return os;
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const std::set<T>& v) {
   for (const auto i : v) {
     os << i << " ";
   }
@@ -187,8 +203,7 @@ vector<vector<T>> parse_matrix(
 }
 
 // Return the manhattan neighbour cells (only positive results)
-vector<std::pair<int, int>> neighbour4(vector<vector<int>> matrix, int x,
-                                       int y) {
+vector<std::pair<int, int>> neighbour4(int x, int y) {
   vector<std::pair<int, int>> neigbours = {{1, 0}, {0, -1}, {-1, 0}, {0, 1}};
   std::ranges::transform(neigbours.begin(), neigbours.end(), neigbours.begin(),
                          [x, y](const std::pair<int, int>& p) {
@@ -196,6 +211,19 @@ vector<std::pair<int, int>> neighbour4(vector<vector<int>> matrix, int x,
                                                       p.second + y};
                          });
   return neigbours;
+}
+
+template <typename pos>
+std::function<bool(pos p)> inMatrixRange(size_t size) {
+  return [size](pos p) {
+    if (std::get<0>(p) < 0 || std::get<1>(p) < 0) {
+      return false;
+    }
+    if (std::get<0>(p) >= size || std::get<1>(p) >= size) {
+      return false;
+    }
+    return true;
+  };
 }
 
 namespace mstd {
