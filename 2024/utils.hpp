@@ -228,13 +228,8 @@ vector<std::pair<int, int>> neighbour4(int x, int y) {
 template <typename pos>
 std::function<bool(pos p)> inMatrixRange(size_t size) {
   return [size](pos p) {
-    if (std::get<0>(p) < 0 || std::get<1>(p) < 0) {
-      return false;
-    }
-    if (std::get<0>(p) >= size || std::get<1>(p) >= size) {
-      return false;
-    }
-    return true;
+    return std::get<0>(p) >= 0 and std::get<1>(p) >= 0 and
+           std::get<0>(p) < size and std::get<1>(p) < size;
   };
 }
 
