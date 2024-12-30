@@ -225,6 +225,17 @@ vector<std::pair<int, int>> neighbour4(int x, int y) {
   return neigbours;
 }
 
+vector<std::pair<int, int>> neighbour8(int x, int y) {
+  vector<std::pair<int, int>> neigbours = {{0, 1},  {1, 1},   {1, 0},  {1, -1},
+                                           {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}};
+  std::ranges::transform(neigbours.begin(), neigbours.end(), neigbours.begin(),
+                         [x, y](const std::pair<int, int>& p) {
+                           return std::pair<int, int>{p.first + x,
+                                                      p.second + y};
+                         });
+  return neigbours;
+}
+
 template <typename pos>
 std::function<bool(pos p)> inMatrixRange(size_t size) {
   return [size](pos p) {
@@ -280,3 +291,61 @@ void visualiseGrid(size_t size, ForwardIterator fit) {
 // vector<T> tokenize(string s, std::function<T(string)> f) {
 // 	return T {};
 // }
+
+namespace internal {
+//see: https://stackoverflow.com/a/16387374/4181011
+template <typename T, size_t... Is>
+T add_rhs_to_lhs(T t1, const T t2, std::integer_sequence<size_t, Is...>) {
+  auto l = {(std::get<Is>(t1) += std::get<Is>(t2), 0)...};
+  std::cout << typeid(l).name() << "\n";
+
+  return t1;
+}
+
+template <typename T, size_t... Is>
+T subtract_rhs_from_lhs(T t1, const T t2,
+                        std::integer_sequence<size_t, Is...>) {
+  auto l = {(std::get<Is>(t1) -= std::get<Is>(t2), 0)...};
+
+  return t1;
+}
+
+template <typename T, size_t... Is>
+T multiply(T t1, const int factor, std::integer_sequence<size_t, Is...>) {
+  auto l = {(std::get<Is>(t1) *= factor, 0)...};
+  return t1;
+}
+
+template <typename T, size_t... Is>
+T divide(T t1, const int factor, std::integer_sequence<size_t, Is...>) {
+  auto l = {(std::get<Is>(t1) /= factor, 0)...};
+  return t1;
+}
+
+}  // namespace internal
+
+template <typename... T>
+class Vector : public std::tuple<T...> {
+
+ public:
+  using std::tuple<T...>::tuple;
+
+  Vector operator+(const Vector& other) {
+    const int size = sizeof...(T);
+    return internal::add_rhs_to_lhs(*this, other,
+                                    std::index_sequence_for<T...>{});
+  }
+
+  Vector operator-(const Vector& other) {
+    return internal::subtract_rhs_from_lhs(*this, other,
+                                           std::index_sequence_for<T...>{});
+  }
+
+  Vector operator*(const int& factor) {
+    return internal::multiply(*this, factor, std::index_sequence_for<T...>{});
+  }
+
+  Vector operator/(const int& factor) {
+    return internal::divide(*this, factor, std::index_sequence_for<T...>{});
+  }
+};
