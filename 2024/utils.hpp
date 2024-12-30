@@ -23,6 +23,10 @@ using std::string;
 using std::to_string;
 using std::vector;
 
+template <typename T>
+using matrix = vector<vector<T>>;
+using pos = std::tuple<int, int>;
+
 vector<string> split_lines(string filename) {
   std::ifstream fs(filename);
   assert(fs);
@@ -87,17 +91,25 @@ string trim(string s) {
   return s;
 }
 
-std::ostream& operator<<(std::ostream& os, const vector<int>& v) {
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const std::tuple<T, T>& v) {
+
+  os << std::get<0>(v) << ":" << std::get<1>(v) << std::endl;
+  return os;
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const vector<T>& v) {
   for (const auto i : v) {
     os << i << " ";
   }
   return os;
 }
 
-template <typename T>
-std::ostream& operator<<(std::ostream& os, const std::tuple<T, T>& v) {
-
-  os << std::get<0>(v) << ":" << std::get<1>(v) << std::endl;
+std::ostream& operator<<(std::ostream& os, const vector<int>& v) {
+  for (const auto i : v) {
+    os << i << " ";
+  }
   return os;
 }
 
@@ -243,6 +255,30 @@ size_t last(T t) {
 }
 
 }  // namespace mstd
+
+template <typename ForwardIterator>
+void visualiseGrid(size_t size, ForwardIterator fit) {
+  matrix m(size, vector<char>(size));
+
+  for (auto i = 0; i < m.size(); ++i) {
+    for (auto j = 0; j < m.size(); ++j) {
+      m[i][j] = '.';
+    }
+  }
+
+  for (auto point : fit) {
+    m[std::get<0>(point)][std::get<1>(point)] = 'X';
+  }
+
+  for (auto i = 0; i < m.size(); ++i) {
+    for (auto j = 0; j < m.size(); ++j) {
+      std::cerr << m[i][j];
+    }
+    std::cerr << "\n";
+  }
+
+  return;
+}
 
 // TODO - Maybe return an iterator instead
 // template <typename T>
