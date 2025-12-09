@@ -236,6 +236,19 @@ vector<std::pair<int, int>> neighbour8(int x, int y) {
   return neigbours;
 }
 
+auto neighbour_diagonals(int x, int y) {
+  const auto neighbours8 = neighbour8(x, y);
+  const auto neighbours4 = neighbour4(x, y);
+  std::set<std::pair<int, int>> n4{neighbours4.begin(), neighbours4.end()};
+  vector<std::pair<int, int>> res{};
+  for (const auto& neighbour :
+       neighbours8 | std::ranges::views::filter(
+                         [n4](auto p) { return not n4.contains(p); })) {
+    res.push_back(neighbour);
+  }
+  return res;
+}
+
 template <typename pos>
 std::function<bool(pos p)> inMatrixRange(size_t size) {
   return [size](pos p) {

@@ -18,17 +18,9 @@ toValue (d:v) | d == 'R' = read v :: Integer
 
 main :: IO ()
 main = do
-  contents <- readFile "data.txt"
-  let fileLines = lines contents
-  -- putStr "First line: " ++ (head fileLines)
-  putStr "First line: "
-  print $ toValue $ head $ fileLines
-  let numbers = 50 : map toValue fileLines
-  print numbers
-  print $ map (`mod` 100) numbers
-  let modNrs = tail $ map (`mod` 100) $ scanl (+) 0 numbers
-  print modNrs
+  fileLines <- lines <$> readFile "data.txt"
+  let numbers = map toValue fileLines
+  let modNrs = tail $ map (`mod` 100) $ scanl (+) 50 numbers
   let nrZeros = filter (== 0) modNrs
-  print nrZeros
   print  $ length nrZeros
   return ()
