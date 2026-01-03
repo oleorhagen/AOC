@@ -13,9 +13,6 @@
 substrings :: String -> [String]
 substrings str = filter (\x -> (length x) < (length str)) [take len (drop start str) | start <- [0..length str - 1], len <- [1..length str - start]]
 
-doubleString :: String -> String
-doubleString s = s ++ s
-
 splitByDelimeter :: Char -> String -> [String]
 splitByDelimeter d = foldr f [[]]
   where

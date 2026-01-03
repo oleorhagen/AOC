@@ -29,7 +29,7 @@ main = do
   -- print rangesInts
   -- Now back to strings for all the numbers
   let rangesStrings = map toString (concat rangesInts) where
-        toString x = show x
+        toString = show
   -- print rangesStrings
 
   -- Beautiful - Now, the actual problem, duplicated IDs
