@@ -34,16 +34,27 @@ maxFrom ints nrRem = maxFound : maxFrom (drop maxPos ints) newRem where
 
 -- Create array of ints from string
 
+fromDigits :: [Int] -> Int
+fromDigits = foldl addDigit 0
+  where addDigit num d = 10*num + d
+
+-- fromDigitsl = foldr addDigit 0
+--   where addDigit num d = 10*num + d
 
 s2Int :: String -> Int
 s2Int s = read s :: Int
 
 main :: IO ()
 main = do
-  fileLines <- lines <$> readFile "test-data.txt"
-  print fileLines
+  fileLines <- lines <$> readFile "data.txt"
+  -- print fileLines
 
   -- Create an array of ints for each battery bank
   let f = map digitToInt
   let nrs = map f fileLines
-  print nrs
+  -- print nrs
+
+  let f l = fromDigits $ maxFrom l 12
+
+  let r = map f nrs
+  print $ sum r
